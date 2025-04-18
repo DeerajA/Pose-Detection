@@ -64,32 +64,8 @@ python app.py
 - MediaPipe
 
 
-## Tips
-
-- If your exercise window opens behind the browser, add this to your Python scripts:
-
-```python
-cv2.namedWindow("Pose", cv2.WINDOW_NORMAL)
-cv2.setWindowProperty("Pose", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
-```
-
-- To avoid hardcoding your Python path in `app.py`, replace:
-
-```python
-"/Users/you/path/to/python3"
-```
-
-with:
-
-```python
-import sys
-sys.executable
-```
-
-
 
 ## Credits
 
 - [MediaPipe](https://mediapipe.dev) for pose detection
 - [Flask](https://flask.palletsprojects.com/) for routing
-- Built by students and fitness tech enthusiasts
