@@ -9,7 +9,6 @@ pose = mp_pose.Pose()
 hands = mp_hands.Hands(max_num_hands=2)
 cap = cv2.VideoCapture(0)
 
-# Optional: Increase resolution
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 
@@ -29,7 +28,6 @@ while True:
     results_pose = pose.process(rgb)
     results_hands = hands.process(rgb)
 
-    # Draw pose
     if results_pose.pose_landmarks:
         mp_drawing.draw_landmarks(frame, results_pose.pose_landmarks, mp_pose.POSE_CONNECTIONS)
 
@@ -44,30 +42,26 @@ while True:
         elif abs(hip1.y - legL.y) > 0.3 and abs(hip2.y - legR.y) > 0.3:
             squatting = False
 
-    # Detect hand gesture for reset
     if results_hands.multi_hand_landmarks and gesture_cooldown == 0:
         if len(results_hands.multi_hand_landmarks) == 2:
             wrist1 = results_hands.multi_hand_landmarks[0].landmark[mp_hands.HandLandmark.WRIST]
             wrist2 = results_hands.multi_hand_landmarks[1].landmark[mp_hands.HandLandmark.WRIST]
 
             dx = abs(wrist1.x - wrist2.x)
-            # print(f"dx = {dx:.2f}")
 
-            if dx > 0.30:  # Reduced threshold for further distance
+            if dx > 0.30:
                 counter = 0
                 squatting = False
                 show_message = True
-                message_timer = 60  # Show for ~2 seconds
+                message_timer = 60
                 print("🔁 Counter reset")
                 gesture_cooldown = 30
 
     if gesture_cooldown > 0:
         gesture_cooldown -= 1
 
-    # Display counter
     cv2.putText(frame, f"Squats: {counter}", (20, 250), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 255, 0), 3)
 
-    # Temporary reset message
     if show_message:
         cv2.putText(frame, "🔁 Counter Reset", (20, 300), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
         message_timer -= 1
