@@ -43,15 +43,16 @@ while True:
     results_pose = pose.process(rgb)
     results_hands = hands.process(rgb)
 
+    # === Hand on head to activate ===
     if results_hands.multi_hand_landmarks and results_pose.pose_landmarks and not active:
         nose = results_pose.pose_landmarks.landmark[0]
         for hand in results_hands.multi_hand_landmarks:
             wrist = hand.landmark[mp_hands.HandLandmark.WRIST]
-            if abs(wrist.y - nose.y) < 0.1 and abs(wrist.x - nose.x) < 0.1:
+            if abs(wrist.y - nose.y) < 0.1:
                 active = True
                 show_message = True
                 message_timer = 60
-                print(" Activated by hand on head")
+                print("🟢 Activated by hand on head")
 
     if active and results_pose.pose_landmarks:
         shoulderL = results_pose.pose_landmarks.landmark[11]
@@ -74,6 +75,7 @@ while True:
         counter += 1
         mp_drawing.draw_landmarks(frame, results_pose.pose_landmarks, mp_pose.POSE_CONNECTIONS)
 
+    # === Gesture: hands apart to reset ===
     if results_hands.multi_hand_landmarks and gesture_cooldown == 0:
         if len(results_hands.multi_hand_landmarks) == 2:
             wrist1 = results_hands.multi_hand_landmarks[0].landmark[mp_hands.HandLandmark.WRIST]
@@ -83,22 +85,23 @@ while True:
             if dx > 0.30:
                 situpsCount = 0
                 situps = False
-                active = False  
+                active = False  # Require hand-on-head again
                 show_message = True
                 message_timer = 60
-                print(" Counter reset, waiting for activation")
+                print("🔁 Counter reset, waiting for activation")
                 gesture_cooldown = 30
 
     if gesture_cooldown > 0:
         gesture_cooldown -= 1
 
+    # === Display ===
     if active:
         cv2.putText(frame, f"Sit-ups: {situpsCount}", (20, 250), cv2.FONT_HERSHEY_PLAIN, 2, (0, 255, 0), 3)
     else:
-        cv2.putText(frame, " Put hand on head to start", (20, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 0), 2)
+        cv2.putText(frame, "✋ Put hand on head to start", (20, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 0), 2)
 
     if show_message:
-        cv2.putText(frame, " Counter Reset" if not active else " Started", (20, 300), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+        cv2.putText(frame, "🔁 Counter Reset" if not active else "🟢 Started", (20, 300), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
         message_timer -= 1
         if message_timer <= 0:
             show_message = False
