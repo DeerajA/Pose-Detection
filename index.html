@@ -5,81 +5,56 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Exercise Tracker</title>
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Segoe UI', sans-serif;
       background: linear-gradient(to bottom right, #0f2027, #203a43, #2c5364);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-      padding: 40px 20px;
-      color: #fff;
+      display: flex; flex-direction: column; align-items: center;
+      min-height: 100vh; padding: 40px 20px; color: #fff;
     }
-
     h1 {
-      font-size: 2.8rem;
-      font-weight: 700;
-      margin-bottom: 10px;
+      font-size: 2.8rem; font-weight: 700; margin-bottom: 10px;
       text-align: center;
     }
-
     p.subtitle {
-      color: #bbb;
-      font-size: 1.1rem;
-      margin-bottom: 30px;
+      color: #bbb; font-size: 1.1rem; margin-bottom: 30px;
+      text-align: center;
     }
-
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
       gap: 20px;
-      width: 100%;
-      max-width: 700px;
+      width: 100%; max-width: 700px;
     }
-
     .card {
       background: #1c1c1c;
       border-radius: 15px;
       padding: 40px 20px;
       text-align: center;
-      color: #fff;
       box-shadow: 0 10px 20px rgba(0,0,0,0.3);
       transition: transform 0.2s, background 0.3s;
       cursor: pointer;
       text-decoration: none;
+      color: #fff;
     }
-
     .card:hover {
       background: #2e2e2e;
       transform: translateY(-5px);
     }
-
     .card h2 {
       font-size: 1.4rem;
       margin: 0;
     }
-
     footer {
       margin-top: auto;
       color: #888;
       font-size: 0.9rem;
       margin-top: 40px;
+      text-align: center;
     }
-
     @media (max-width: 500px) {
-      h1 {
-        font-size: 2rem;
-      }
-
-      .card h2 {
-        font-size: 1.2rem;
-      }
+      h1 { font-size: 2rem; }
+      .card h2 { font-size: 1.2rem; }
     }
   </style>
 </head>
@@ -88,12 +63,11 @@
   <p class="subtitle">Select an exercise to begin tracking your reps</p>
 
   <div class="grid">
-    <a href="/start/squat" class="card"><h2>Squats</h2></a>
-    <a href="/start/pushup" class="card"><h2>Push-Ups</h2></a>
-    <a href="/start/situp" class="card"><h2>Sit-Ups</h2></a>
-    <a href="/start/plank" class="card"><h2>Plank</h2></a>
+    <a href="{{ url_for('track_exercise', exercise='squat') }}" class="card"><h2>Squats</h2></a>
+    <a href="{{ url_for('track_exercise', exercise='pushup') }}" class="card"><h2>Push‑Ups</h2></a>
+    <a href="{{ url_for('track_exercise', exercise='situp') }}" class="card"><h2>Sit‑Ups</h2></a>
+    <a href="{{ url_for('track_exercise', exercise='plank') }}" class="card"><h2>Plank</h2></a>
   </div>
 
-  <footer>© 2025 Exercise Tracker. Track your form, crush your goals 💪</footer>
 </body>
 </html>
