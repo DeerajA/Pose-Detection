@@ -79,7 +79,7 @@ while True:
         cv2.putText(frame, " Put hand on head to begin", (20, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 0), 2)
 
     if show_message:
-        cv2.putText(frame, " Started" if active else "🔁 Counter Reset", (20, 300), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+        cv2.putText(frame, " Started" if active else "Counter Reset", (20, 300), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
         message_timer -= 1
         if message_timer <= 0:
             show_message = False
