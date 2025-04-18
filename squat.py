@@ -17,6 +17,7 @@ squatting = False
 gesture_cooldown = 0
 show_message = False
 message_timer = 0
+active = False
 
 while True:
     ret, frame = cap.read()
@@ -28,7 +29,18 @@ while True:
     results_pose = pose.process(rgb)
     results_hands = hands.process(rgb)
 
-    if results_pose.pose_landmarks:
+    if results_hands.multi_hand_landmarks and results_pose.pose_landmarks:
+        head = results_pose.pose_landmarks.landmark[0] 
+        for hand in results_hands.multi_hand_landmarks:
+            wrist = hand.landmark[mp_hands.HandLandmark.WRIST]
+            distance = abs(wrist.y - head.y)
+            if distance < 0.1:
+                active = True
+                show_message = True
+                message_timer = 60
+                print(" Gesture detected — Counting enabled")
+
+    if active and results_pose.pose_landmarks:
         mp_drawing.draw_landmarks(frame, results_pose.pose_landmarks, mp_pose.POSE_CONNECTIONS)
 
         hip1 = results_pose.pose_landmarks.landmark[23]
@@ -52,23 +64,27 @@ while True:
             if dx > 0.30:
                 counter = 0
                 squatting = False
+                active = False  
                 show_message = True
                 message_timer = 60
-                print("🔁 Counter reset")
+                print(" Counter reset — waiting for hand on head")
                 gesture_cooldown = 30
 
     if gesture_cooldown > 0:
         gesture_cooldown -= 1
 
-    cv2.putText(frame, f"Squats: {counter}", (20, 250), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 255, 0), 3)
+    if active:
+        cv2.putText(frame, f"Squats: {counter}", (20, 250), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 255, 0), 3)
+    else:
+        cv2.putText(frame, " Put hand on head to begin", (20, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 0), 2)
 
     if show_message:
-        cv2.putText(frame, "🔁 Counter Reset", (20, 300), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+        cv2.putText(frame, " Started" if active else "🔁 Counter Reset", (20, 300), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
         message_timer -= 1
         if message_timer <= 0:
             show_message = False
 
-    cv2.imshow("Squat Counter with Gesture Reset", frame)
+    cv2.imshow("Squat Counter (Hand-on-Head to Start)", frame)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
