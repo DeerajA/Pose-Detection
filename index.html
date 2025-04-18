@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Push-up Tracker</title>
+</head>
+<body style="font-family: sans-serif;">
+  <h1>🏋️ Push-up Counter</h1>
+  <button onclick="startTracking()" style="padding: 10px 20px; font-size: 18px;">Start Tracking</button>
+
+  <script>
+    function startTracking() {
+      fetch('/start')
+        .then(response => alert("Tracking started. Check camera window."))
+        .catch(error => alert("Failed to start camera"));
+    }
+  </script>
+</body>
+</html>
